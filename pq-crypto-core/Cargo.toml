@@ -1,0 +1,40 @@
+[package]
+name = "pq-crypto-core"
+version = "0.1.0"
+description = "Maknoon post-quantum core (ML-DSA-65 + X-Wing HPKE) with UniFFI bindings for Swift and Kotlin"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[lib]
+name = "pq_crypto_core"
+crate-type = ["lib", "cdylib", "staticlib"]
+
+[dependencies]
+# FIPS-204 ML-DSA, pure Rust (trivial cargo-ndk). Byte-parity with Apple
+# CryptoKit + @noble/post-quantum is verified by the KAT corpus
+# (tests/parity.rs).
+ml-dsa = "0.1"
+hex = "0.4"
+thiserror = "1"
+
+# X-Wing HPKE (Verify & Pay seal). x-wing pulls ml-kem 0.3 + x25519-dalek;
+# we hand-roll RFC 9180 Base mode on top with hkdf/sha2/aes-gcm so the wire
+# bytes match Apple CryptoKit's XWingMLKEM768X25519_SHA256_AES_GCM_256
+# (proven both directions by tests/xwing_parity.rs). getrandom supplies the
+# encapsulation randomness (Android uses its linux getrandom backend).
+x-wing = "0.1.0-rc.0"
+hkdf = "0.12"
+sha2 = "0.10"
+aes-gcm = "0.10"
+getrandom = "0.2"
+
+# UniFFI proc-macro mode (setup_scaffolding!) -> Kotlin + Swift glue, same
+# pattern as the ledger-*-rs cores. `cli` builds the uniffi-bindgen wrapper.
+uniffi = { version = "0.31", features = ["cli"] }
+
+[dev-dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

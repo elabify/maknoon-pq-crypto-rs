@@ -1,0 +1,21 @@
+## Rust
+/target/
+**/target/
+*.pdb
+
+## UniFFI generated bindings (regenerated from source via android/build-aar.sh)
+/android/library/src/main/java/uniffi/
+/android/library/src/main/jniLibs/
+
+## Build outputs
+/android/build/
+/android/.gradle/
+/android/library/build/
+
+## macOS
+.DS_Store
+
+## IDE
+.idea/
+.vscode/
+*.swp
