@@ -68,6 +68,10 @@ KOTLIN_OUT_DIR="android/library/src/main/java"
 
 # Shipped ABIs: arm64-v8a + x86_64 only (modern devices + emulator).
 echo "[android] building native libs via cargo-ndk"
+# 16 KB page-size alignment (Google Play requirement for Android 15+). NDK r27+
+# defaults to this; pin it explicitly so a build on an older NDK still emits
+# 16 KB-aligned .so (verify with llvm-readelf -l: LOAD align must be 0x4000).
+export RUSTFLAGS="${RUSTFLAGS:-} -C link-arg=-Wl,-z,max-page-size=16384 -C link-arg=-Wl,-z,common-page-size=16384"
 "$CARGO" ndk \
     --target arm64-v8a \
     --target x86_64 \
