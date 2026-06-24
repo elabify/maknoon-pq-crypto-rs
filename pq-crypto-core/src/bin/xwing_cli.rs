@@ -32,8 +32,7 @@ fn main() {
         }
         Some("seal") => {
             let (ek, info, pt) = (h(&a[2]), h(&a[3]), h(&a[4]));
-            let (enc, sealed) =
-                xwing_seal_deterministic(&ek, &info, &pt, &rand64()).expect("seal");
+            let (enc, sealed) = xwing_seal_deterministic(&ek, &info, &pt, &rand64()).expect("seal");
             println!("{} {}", hex::encode(&enc), hex::encode(&sealed));
         }
         Some("open") => {

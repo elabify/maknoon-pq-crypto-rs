@@ -56,7 +56,11 @@ fn xwing_deterministic_kat_is_stable() {
         xwing_seal_deterministic(&pk, KAT_INFO, KAT_PLAINTEXT, &kat_randomness()).unwrap();
     assert_eq!(enc.len(), XWING_ENCAPSULATED_KEY_LEN);
     assert_eq!(sha256_hex(&enc), KAT_ENC_SHA256, "X-Wing enc KAT drifted");
-    assert_eq!(hex::encode(&ct), KAT_CT_HEX, "X-Wing ciphertext KAT drifted");
+    assert_eq!(
+        hex::encode(&ct),
+        KAT_CT_HEX,
+        "X-Wing ciphertext KAT drifted"
+    );
 
     let opened = xwing_open_with_secret(&sk, &enc, KAT_INFO, &ct).unwrap();
     assert_eq!(opened, KAT_PLAINTEXT, "round-trip plaintext mismatch");
@@ -100,10 +104,7 @@ fn swift_available() -> bool {
 fn run(cmd: &mut Command) -> Option<String> {
     let out = cmd.output().ok()?;
     if !out.status.success() {
-        eprintln!(
-            "command failed: {}",
-            String::from_utf8_lossy(&out.stderr)
-        );
+        eprintln!("command failed: {}", String::from_utf8_lossy(&out.stderr));
         return None;
     }
     Some(String::from_utf8_lossy(&out.stdout).trim().to_string())
@@ -112,7 +113,9 @@ fn run(cmd: &mut Command) -> Option<String> {
 #[test]
 fn xwing_interop_with_cryptokit() {
     if !swift_available() || !oracle_path().exists() {
-        eprintln!("SKIP xwing_interop_with_cryptokit: swift/CryptoKit not available (run on macOS 26)");
+        eprintln!(
+            "SKIP xwing_interop_with_cryptokit: swift/CryptoKit not available (run on macOS 26)"
+        );
         return;
     }
     let oracle = oracle_path();
@@ -131,7 +134,10 @@ fn xwing_interop_with_cryptokit() {
             .arg(&info_hex)
             .arg(&pt_hex))
         .unwrap_or_else(|| panic!("Direction A run {i} produced no output"));
-        assert_eq!(opened, pt_hex, "Direction A mismatch (Rust seal not opened by CryptoKit)");
+        assert_eq!(
+            opened, pt_hex,
+            "Direction A mismatch (Rust seal not opened by CryptoKit)"
+        );
     }
 
     // Direction B: CryptoKit seals -> Rust opens.
@@ -152,5 +158,8 @@ fn xwing_interop_with_cryptokit() {
         .arg(enc_hex)
         .arg(sealed_hex))
     .expect("Rust open");
-    assert_eq!(opened, pt_hex, "Direction B mismatch (CryptoKit seal not opened by Rust)");
+    assert_eq!(
+        opened, pt_hex,
+        "Direction B mismatch (CryptoKit seal not opened by Rust)"
+    );
 }

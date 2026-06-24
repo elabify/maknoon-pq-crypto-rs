@@ -7,7 +7,7 @@
 // corpus at elabify-core/test-vectors (see tests/parity.rs).
 
 use ml_dsa::signature::Verifier;
-use ml_dsa::{B32, EncodedSignature, MlDsa65, Signature, SigningKey, VerifyingKey};
+use ml_dsa::{EncodedSignature, MlDsa65, Signature, SigningKey, VerifyingKey, B32};
 
 uniffi::setup_scaffolding!();
 
@@ -73,7 +73,11 @@ pub fn mldsa65_verify_signature(public_key: Vec<u8>, signature: Vec<u8>, message
 pub fn mldsa65_public_key_from_seed(seed: &[u8; 32]) -> Vec<u8> {
     let xi: B32 = (*seed).into();
     let sk = SigningKey::<MlDsa65>::from_seed(&xi);
-    sk.expanded_key().verifying_key().encode().as_slice().to_vec()
+    sk.expanded_key()
+        .verifying_key()
+        .encode()
+        .as_slice()
+        .to_vec()
 }
 
 /// Sign `message` deterministically (empty context) with the master key

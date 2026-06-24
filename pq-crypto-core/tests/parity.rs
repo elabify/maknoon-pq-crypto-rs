@@ -29,8 +29,7 @@ struct Corpus {
 
 fn corpus_path() -> PathBuf {
     // tests/ -> pq-crypto-core/ -> pq-crypto-rs/test-vectors/
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("../test-vectors/mldsa65.kat.json")
+    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../test-vectors/mldsa65.kat.json")
 }
 
 fn seed32(hex_str: &str) -> [u8; 32] {

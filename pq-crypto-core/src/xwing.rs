@@ -24,7 +24,7 @@ use aes_gcm::{Aes256Gcm, Nonce};
 use hkdf::Hkdf;
 use sha2::Sha256;
 use x_wing::{
-    Ciphertext, Decapsulate, Decapsulator, DecapsulationKey, EncapsulationKey, KeyExport,
+    Ciphertext, Decapsulate, DecapsulationKey, Decapsulator, EncapsulationKey, KeyExport,
 };
 
 use crate::PqError;
@@ -98,13 +98,17 @@ fn aead_seal(key: &[u8], base_nonce: &[u8], pt: &[u8]) -> Result<Vec<u8>, PqErro
     // seq = 0 -> nonce = base_nonce, no AAD (single-shot).
     let cipher = Aes256Gcm::new_from_slice(key).map_err(|_| PqError::XWingSealFailed)?;
     let nonce = Nonce::from_slice(base_nonce);
-    cipher.encrypt(nonce, pt).map_err(|_| PqError::XWingSealFailed)
+    cipher
+        .encrypt(nonce, pt)
+        .map_err(|_| PqError::XWingSealFailed)
 }
 
 fn aead_open(key: &[u8], base_nonce: &[u8], ct: &[u8]) -> Result<Vec<u8>, PqError> {
     let cipher = Aes256Gcm::new_from_slice(key).map_err(|_| PqError::XWingOpenFailed)?;
     let nonce = Nonce::from_slice(base_nonce);
-    cipher.decrypt(nonce, ct).map_err(|_| PqError::XWingOpenFailed)
+    cipher
+        .decrypt(nonce, ct)
+        .map_err(|_| PqError::XWingOpenFailed)
 }
 
 fn secret_array(sk: &[u8]) -> Result<[u8; 32], PqError> {
