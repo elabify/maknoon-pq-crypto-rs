@@ -112,6 +112,14 @@ fn run(cmd: &mut Command) -> Option<String> {
 
 #[test]
 fn xwing_interop_with_cryptokit() {
+    // CryptoKit is an Apple framework: it exists only on macOS. CI runs on
+    // Linux, where the Swift toolchain IS installed (so swift_available() is
+    // true) but `import CryptoKit` fails to compile. Gate on the target OS so
+    // the live oracle only runs where CryptoKit can.
+    if !cfg!(target_os = "macos") {
+        eprintln!("SKIP xwing_interop_with_cryptokit: CryptoKit is macOS-only (run on macOS 26)");
+        return;
+    }
     if !swift_available() || !oracle_path().exists() {
         eprintln!(
             "SKIP xwing_interop_with_cryptokit: swift/CryptoKit not available (run on macOS 26)"
