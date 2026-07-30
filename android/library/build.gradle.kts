@@ -37,7 +37,7 @@ android {
 
 dependencies {
     // UniFFI-generated Kotlin glue loads the native lib via JNA.
-    implementation("net.java.dev.jna:jna:5.14.0@aar")
+    implementation("net.java.dev.jna:jna:5.17.0@aar")
     // UniFFI async-callback support (kept for parity with the cores even
     // though pq-crypto-core has no async fns today).
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
